@@ -1,5 +1,5 @@
 import os
-from crewai import Crew
+from crewai import Crew, Process
 from decouple import config
 from agents import CustomAgents
 from tasks import CustomTasks
@@ -19,18 +19,22 @@ class CustomCrew:
         turing = agents.alan_turing()
         lovelace = agents.ada_lovelace()
         musk = agents.elon_musk()
-        mod = agents.moderator()
 
         # Definición de tareas
-        turing_task = tasks.turing_task(turing)
-        lovelace_task = tasks.lovelace_task(lovelace)
-        musk_task = tasks.musk_task(musk)
-        mod_task = tasks.moderation_task(mod)
+        turing_task_1 = tasks.turing_task_1(turing)
+        lovelace_task_1 = tasks.lovelace_task_1(lovelace)
+        musk_task_1 = tasks.musk_task_1(musk)
 
-        # Creación de la Crew
+        turing_task_2 = tasks.turing_task_2(turing)
+        lovelace_task_2 = tasks.lovelace_task_2(lovelace)
+        musk_task_2 = tasks.musk_task_2(musk)
+
+        # Creación de la Crew con varias tareas para cada agente
         crew = Crew(
-            agents=[turing, lovelace, musk, mod],
-            tasks=[turing_task, lovelace_task, musk_task, mod_task],
+            agents=[turing, lovelace, musk],
+            tasks=[turing_task_1, lovelace_task_1, musk_task_1, 
+                   turing_task_2, lovelace_task_2, musk_task_2],
+            process=Process.sequential,  # Flujo secuencial para mantener el orden
             verbose=True,
         )
 

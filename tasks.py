@@ -3,56 +3,82 @@ from textwrap import dedent
 
 class CustomTasks:
     def __tip_section(self):
-        return "Please focus on having a natural and engaging conversation."
+        return "Keep your responses brief and build on the points of others."
 
-    def turing_task(self, agent):
+    def turing_task_1(self, agent):
         return Task(
             description=dedent(
                 f"""
-                Alan Turing, please start the discussion by sharing your thoughts on AI and its future.
+                Alan Turing, start the discussion with a brief point about AI's potential. Make it short and engaging.
                 
                 {self.__tip_section()}
                 """
             ),
-            expected_output="A natural and engaging discussion on AI's future.",
+            expected_output="A brief point about AI's potential.",
             agent=agent,
         )
 
-    def lovelace_task(self, agent):
+    def turing_task_2(self, agent):
         return Task(
             description=dedent(
                 f"""
-                Ada Lovelace, continue by elaborating on Alan Turing's points, especially focusing on ethical considerations.
+                Alan Turing, respond to the points raised by Ada Lovelace and Elon Musk. Keep the conversation flowing.
                 
                 {self.__tip_section()}
                 """
             ),
-            expected_output="A thoughtful continuation of the discussion with a focus on ethics.",
+            expected_output="A continuation of the discussion with added insights.",
             agent=agent,
         )
 
-    def musk_task(self, agent):
+    def lovelace_task_1(self, agent):
         return Task(
             description=dedent(
                 f"""
-                Elon Musk, please add your insights on the potential risks and advancements of AI, referencing the previous discussions.
+                Ada Lovelace, quickly respond to Turing's point with a focus on ethics. Keep it concise.
                 
                 {self.__tip_section()}
                 """
             ),
-            expected_output="A discussion on AI risks and advancements, building on previous points.",
+            expected_output="A quick response focusing on the ethical aspects.",
             agent=agent,
         )
 
-    def moderation_task(self, agent):
+    def lovelace_task_2(self, agent):
         return Task(
             description=dedent(
                 f"""
-                As the moderator, guide the conversation. Ensure that participants build on each other's points and maintain a natural, conversational flow. Wrap up the discussion after everyone has had their responses.
+                Ada Lovelace, continue the discussion by addressing the points raised by Turing and Musk. Add your insights.
                 
                 {self.__tip_section()}
                 """
             ),
-            expected_output="A smoothly moderated, natural discussion on AI.",
+            expected_output="Further ethical considerations and discussion.",
+            agent=agent,
+        )
+
+    def musk_task_1(self, agent):
+        return Task(
+            description=dedent(
+                f"""
+                Elon Musk, respond to the ongoing conversation with a quick point on AI risks and opportunities. Be brief.
+                
+                {self.__tip_section()}
+                """
+            ),
+            expected_output="A concise point on AI risks and opportunities.",
+            agent=agent,
+        )
+
+    def musk_task_2(self, agent):
+        return Task(
+            description=dedent(
+                f"""
+                Elon Musk, follow up with additional thoughts, responding to the points raised by Turing and Lovelace.
+                
+                {self.__tip_section()}
+                """
+            ),
+            expected_output="A continuation of the discussion with focus on risks and advancements.",
             agent=agent,
         )
