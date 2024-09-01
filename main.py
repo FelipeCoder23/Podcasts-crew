@@ -1,4 +1,5 @@
 import os
+import gradio as gr
 from crewai import Crew, Process
 from decouple import config
 from agents import CustomAgents
@@ -10,8 +11,17 @@ os.environ["OPENAI_API_KEY"] = config("OPENAI_API_KEY")
 class CustomCrew:
     def __init__(self, topic):
         self.topic = topic
+        self.conversation = ""
 
-    def run(self):
+    def run_step(self, agent_task_pair):
+        agent, task = agent_task_pair
+        # Usamos invoke y accedemos directamente al contenido del mensaje
+        response = agent.llm.invoke(task.description)
+        content = response.content  # Accedemos directamente al atributo content
+        self.conversation += f"{agent.role}: {content}\n\n"
+        return self.conversation
+
+    def run(self, update_fn):
         agents = CustomAgents()
         tasks = CustomTasks()
 
@@ -29,27 +39,45 @@ class CustomCrew:
         lovelace_task_2 = tasks.lovelace_task_2(lovelace)
         musk_task_2 = tasks.musk_task_2(musk)
 
-        # Creación de la Crew con varias tareas para cada agente
-        crew = Crew(
-            agents=[turing, lovelace, musk],
-            tasks=[turing_task_1, lovelace_task_1, musk_task_1, 
-                   turing_task_2, lovelace_task_2, musk_task_2],
-            process=Process.sequential,  # Flujo secuencial para mantener el orden
-            verbose=True,
-        )
+        # Pares de agente-tarea para la secuencia de conversación
+        agent_task_pairs = [
+            (turing, turing_task_1),
+            (lovelace, lovelace_task_1),
+            (musk, musk_task_1),
+            (turing, turing_task_2),
+            (lovelace, lovelace_task_2),
+            (musk, musk_task_2)
+        ]
 
-        result = crew.kickoff()
+        for pair in agent_task_pairs:
+            current_conversation = self.run_step(pair)
+            update_fn(current_conversation)
+        
+        return self.conversation
+
+# Función que se conecta con Gradio
+def run_podcast(topic, update_fn):
+    custom_crew = CustomCrew(topic)
+    result = custom_crew.run(update_fn)
+    return result
+
+def launch_gradio():
+    def gradio_interface(topic):
+        def update_fn(new_text):
+            return gr.update(value=new_text)
+
+        result = run_podcast(topic, update_fn)
         return result
 
+    iface = gr.Interface(
+        fn=gradio_interface,
+        inputs=gr.Textbox(lines=2, placeholder="Enter the podcast topic..."),
+        outputs=gr.Textbox(label="Podcast Transcript"),
+        title="AI Podcast Generator",
+        description="Generate a podcast conversation on AI topics with Alan Turing, Ada Lovelace, and Elon Musk.",
+        live=True  # Esto activa la actualización en tiempo real
+    )
+    iface.launch()
+
 if __name__ == "__main__":
-    print("## Welcome to the AI Podcast Crew")
-    print("-------------------------------")
-    topic = input("Enter the podcast topic: ")
-
-    custom_crew = CustomCrew(topic)
-    result = custom_crew.run()
-
-    print("\n\n########################")
-    print("## Podcast Transcript:")
-    print("########################\n")
-    print(result)
+    launch_gradio()
