@@ -1,0 +1,5 @@
+openai
+gradio
+crewAI
+langchain
+python-decouple
