@@ -19,7 +19,7 @@ Este proyecto utiliza **CrewAI** y **Gradio** junto con modelos de lenguaje gran
 ## Instalación
 
 - Clona el repositorio.
-- Crea un entorno virtual e instala las dependencias (requerimientos).
+- Crea un entorno virtual e instala las dependencias (requirements.txt).
 - Crea el archivo .env y configura las claves de API de OpenAI.
 - Ejecuta el proyecto con `python main.py`.
 - Abre la URL proporcionada por Gradio en tu navegador.
